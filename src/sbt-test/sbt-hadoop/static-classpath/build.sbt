@@ -8,7 +8,7 @@ hadoopHdfsArtifactPath := new HdfsPath(s"/tmp/${name.value}-${version.value}.jar
 
 hadoopClasspath := {
   val etc = (resourceDirectory in Compile).value / "hadoop" / "etc"
-  HadoopPlugin.classpathFromDirectory(etc)
+  HadoopUtils.classpathFromDirectory(etc)
 }
 
 enablePlugins(HadoopPlugin)

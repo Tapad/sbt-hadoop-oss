@@ -1,0 +1,3 @@
+$ exec chmod u+x src/main/resources/hadoop/bin/hadoop
+> hadoopClasspath
+> hadoop:publish

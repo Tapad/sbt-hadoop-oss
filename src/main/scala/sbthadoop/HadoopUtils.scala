@@ -1,6 +1,8 @@
 package sbthadoop
 
 import java.io.File
+import sbt.{Attributed, PathFinder}
+import sbt.Keys.Classpath
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 
@@ -28,5 +30,13 @@ object HadoopUtils {
     } catch {
       case e: Exception => sys.error(s"Error occurred when trying to create instance of FileSystem: ${e.getMessage}")
     }
+  }
+
+  def classpathFromDirectory(dir: File): Classpath = {
+    Attributed.blankSeq(PathFinder(dir).***.get)
+  }
+
+  implicit def fileToPath(file: File): Path = {
+    new Path(file.getAbsolutePath)
   }
 }

@@ -85,23 +85,18 @@ For more information, refer to the documentation provided by [sbt-assembly](http
 ## Contributing
 
 ### Project structure
-- plugin
-- library
+- root (.)
 
-#### plugin
-An sbt plugin and underlying interface used to publish artifacts to HDFS.
-
-#### library
-Supporting library code leveraged by the plugin.
+#### root
+The sbt plugin and underlying interface used to publish artifacts to HDFS.
 
 ### Running tests
 The main features and functionality of `sbt-hadoop` are tested using sbt's [`scripted-plugin`](https://github.com/sbt/sbt/tree/0.13/scripted). `scripted` tests exist in the `src/sbt-test` directory of the root project.
 
-To run these tests, issue `scripted` from an sbt session after targeting the plugin subproject:
+To run these tests, issue `scripted` from an sbt session:
 
 ```
 $ sbt
-> project plugin
 > scripted
 ```
 

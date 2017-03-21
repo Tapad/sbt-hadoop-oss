@@ -9,6 +9,7 @@ object HadoopPlugin extends AutoPlugin {
     type HdfsPath = org.apache.hadoop.fs.Path
     val Hadoop = config("hadoop").extend(Compile)
     val HadoopKeys = sbthadoop.HadoopKeys
+    val HadoopUtils = sbthadoop.HadoopUtils
     val hadoopClasspath = HadoopKeys.hadoopClasspath
     val hadoopClasspathFromExecutable = HadoopKeys.hadoopClasspathFromExecutable
     val hadoopExecutable = HadoopKeys.hadoopExecutable
@@ -18,7 +19,7 @@ object HadoopPlugin extends AutoPlugin {
     val hadoopUser = HadoopKeys.hadoopUser
   }
 
-  import autoImport._
+  import autoImport._, HadoopUtils._
 
   override def projectSettings = defaultSettings ++ requiredSettings ++ inConfig(Hadoop)(scopedSettings)
 
@@ -42,7 +43,7 @@ object HadoopPlugin extends AutoPlugin {
     hadoopHdfs := {
       val configurationFiles = hadoopClasspath.value.files
       val username = hadoopUser.value
-      HadoopUtils.getFileSystem(configurationFiles, username)
+      getFileSystem(configurationFiles, username)
     },
     hadoopLocalArtifactPath := {
       (artifactPath in (Compile, packageBin)).value
@@ -73,12 +74,4 @@ object HadoopPlugin extends AutoPlugin {
       }
     }
   )
-
-  def classpathFromDirectory(dir: File): Classpath = {
-    Attributed.blankSeq(dir.***.get)
-  }
-
-  implicit def fileToPath(file: File): HdfsPath = {
-    new HdfsPath(file.getAbsolutePath)
-  }
 }

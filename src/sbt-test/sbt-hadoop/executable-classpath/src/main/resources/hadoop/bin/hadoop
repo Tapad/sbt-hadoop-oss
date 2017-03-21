@@ -1,0 +1,6 @@
+#!/bin/bash
+
+BIN_DIR=$(dirname $0)
+ETC_DIR=$BIN_DIR/../etc
+
+[ "$1" == "classpath" ] && echo $ETC_DIR || exit 1
