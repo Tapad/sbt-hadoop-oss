@@ -7,6 +7,7 @@ An [sbt](http://scala-sbt.org) plugin for publishing artifacts to the [Hadoop](h
   * [Installation](#installation)
   * [Usage](#usage)
     * [Configuring the `hadoopClasspath`](#configuring-the-hadoopclasspath)
+    * [Setting the `hadoopHdfsArtifactPath`](#setting-the-hadoophdfsartifactpath)
     * [Integration with the built-in `packageBin` task](#integration-with-the-built-in-packagebin-task)
     * [Integration with sbt-assembly](#integration-with-sbt-assembly)
   * [Contributing](#contributing)
@@ -44,6 +45,19 @@ Assuming configuration files are located on your local file system at `/usr/loca
 
 ```
 hadoopClasspath := HadoopUtils.classpathFromDirectory(file("/usr/local/hadoop-2.7.3/etc"))
+```
+
+### Setting the `hadoopHdfsArtifactPath`
+`hadoopHdfsArtifactPath` is the only required value that must be set before attempting to publish an artifact to HDFS.
+
+It represents the target destination on HDFS where your artifact will be published.
+
+The value of `hadoopHdfsArtifactPath` must be an instance of `org.apache.hadoop.fs.Path`.
+
+A type alias, `HdfsPath`, is auto-imported for your convenience:
+
+```
+hadoopHdfsArtifactPath := new HdfsPath("/user/name/foo/bar/artifact-0.1.0.jar")
 ```
 
 ### Integration with the built-in `packageBin` task
