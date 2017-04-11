@@ -31,8 +31,8 @@ object HadoopPlugin extends AutoPlugin {
         case Some(executable) =>
           try {
             val result = s"${executable.getAbsolutePath} classpath".!!.trim
-            val files = IO.parseClasspath(result)
-            Attributed.blankSeq(files)
+            val paths = IO.parseClasspath(result)
+            Attributed.blankSeq(paths)
           } catch {
             case e: Exception =>
               sys.error("Could not export classpath from `hadoopExecutable`: " + ErrorHandling.reducedToString(e))
@@ -41,9 +41,18 @@ object HadoopPlugin extends AutoPlugin {
     },
     hadoopExecutable := sys.env.get("HADOOP_HOME").map(file(_) / "bin" / "hadoop"),
     hadoopHdfs := {
+      val log = streams.value.log
+      val classpathFiles = hadoopClasspath.value.files.flatMap {
+        case path if path.exists && path.isFile => Seq(path)
+        case path if path.exists && path.isDirectory => filesInDirectory(path)
+        case path if path.getName == "*" => filesInDirectory(path.getParentFile)
+        case path => // entry can not easily be (1) used as or (2) expanded into an absolute, local resource path
+          log.debug(s"Skipping `hadoopClasspath` entry $path for FileSystem configuration")
+          Seq.empty
+      }
       val configurationFiles = hadoopClasspath.value.files
       val username = hadoopUser.value
-      getFileSystem(configurationFiles, username)
+      getFileSystem(classpathFiles, username)
     },
     hadoopLocalArtifactPath := {
       (artifactPath in (Compile, packageBin)).value

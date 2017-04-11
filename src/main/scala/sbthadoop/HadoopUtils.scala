@@ -33,7 +33,11 @@ object HadoopUtils {
   }
 
   def classpathFromDirectory(dir: File): Classpath = {
-    Attributed.blankSeq(PathFinder(dir).***.get)
+    Attributed.blankSeq(filesInDirectory(dir))
+  }
+
+  def filesInDirectory(dir: File): Seq[File] = {
+    PathFinder(dir).***.get
   }
 
   implicit def fileToPath(file: File): Path = {
