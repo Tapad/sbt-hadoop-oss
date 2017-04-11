@@ -75,7 +75,9 @@ object HadoopPlugin extends AutoPlugin {
       val localPath = hadoopLocalArtifactPath.value
       val remotePath = hadoopHdfsArtifactPath.value
       val hdfs = hadoopHdfs.value
+      val log = streams.value.log
       try {
+        log.info(s"Copying $localPath to $remotePath")
         hdfs.copyFromLocalFile(false, true, localPath, remotePath)
       } catch {
         case e: Exception =>
