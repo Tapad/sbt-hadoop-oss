@@ -27,17 +27,41 @@ addSbtPlugin("com.tapad.sbt" % "sbt-hadoop" % "0.1.1")
 ```
 
 ## Usage
+Assuming the `HADOOP_HOME` environmental variable is set and pointing to a local installation of the Hadoop binaries, add the following configuration to your build definition:
+
+```
+hadoopClasspath := hadoopClasspathFromExecutable.value
+
+hadoopHdfsArtifactPath := new HdfsPath("/path/to/desired/hdfs/target/artifact.jar")
+
+enablePlugins(HadoopPlugin)
+```
 
 ### Configuring the `hadoopClasspath`
 In order to publish artifacts to HDFS, sbt-hadoop needs valid configuration information about your Hadoop installation.
 
 sbt-hadoop expects the typical Hadoop configuration files (`core-site.xml` and `hdfs-site.xml`) to be present on your local file system.
 
-These configuration files can be discovered by sbt-hadoop in one of two ways: (1) by statically adding their addresses to `hadoopClasspath`, or (2) by allowing sbt-hadoop to invoke a locally available `hadoop` binary. The latter methodology allows sbt-hadoop to retrieve enough information to set the `hadoopClasspath` automatically.
+These configuration files can be discovered by sbt-hadoop in one of two ways:
 
-To use a local `hadoop` binary for `hadoopClasspath` inference, simply assign `hadoopClasspath := hadoopClasspathFromExecutable.value`.
+1. By allowing sbt-hadoop to invoke a locally available `hadoop` binary
+2. By statically adding their addresses to `hadoopClasspath`
 
-sbt-hadoop will attempt to find a local `hadoop` binary via the `HADOOP_HOME` environmental variable. This can be manually overridden by setting a value for the `hadoopExecutable` setting key.
+Invoking the local binary allows sbt-hadoop to retrieve enough information to set the `hadoopClasspath` automatically.
+
+To use a local `hadoop` binary for `hadoopClasspath` inference, add the following assignment to your build definition:
+
+```
+hadoopClasspath := hadoopClasspathFromExecutable.value
+```
+
+sbt-hadoop will attempt to find a local `hadoop` binary via the `HADOOP_HOME` environmental variable.
+
+This can be manually overridden by setting a value for the `hadoopExecutable` setting key:
+
+```
+hadoopExecutable := Some(file("/usr/bin/hadoop"))
+```
 
 If a local `hadoop` binary is not available, the `hadoopClasspath` must be set statically.
 
@@ -48,7 +72,7 @@ hadoopClasspath := HadoopUtils.classpathFromDirectory(file("/usr/local/hadoop-2.
 ```
 
 ### Setting the `hadoopHdfsArtifactPath`
-`hadoopHdfsArtifactPath` is the only required value that must be set before attempting to publish an artifact to HDFS.
+`hadoopHdfsArtifactPath` must be set before attempting to publish an artifact to HDFS.
 
 It represents the target destination on HDFS where your artifact will be published.
 
@@ -63,9 +87,13 @@ hadoopHdfsArtifactPath := new HdfsPath("/user/name/foo/bar/artifact-0.1.0.jar")
 ### Integration with the built-in `packageBin` task
 By default, sbt-hadoop is configured to upload the resulting artifact of the `packageBin` task to HDFS.
 
-The only required configuration is setting your `hadoopClasspath` and your `hadoopHdfsArtifactPath`, and manually enabling the `HadoopPlugin`.
+It is still required to configure your `hadoopClasspath`, set your `hadoopHdfsArtifactPath`, and manually enable the `HadoopPlugin`.
 
 ```
+hadoopClasspath := hadoopClasspathFromExecutable.value
+
+hadoopHdfsArtifactPath := new HdfsPath(s"/tmp/${name.value}-${version.value}.jar")
+
 enablePlugins(HadoopPlugin)
 ```
 
