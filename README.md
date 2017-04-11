@@ -61,9 +61,15 @@ hadoopHdfsArtifactPath := new HdfsPath("/user/name/foo/bar/artifact-0.1.0.jar")
 ```
 
 ### Integration with the built-in `packageBin` task
-By default, sbt-hadoop is configured to upload the resulting artifact of the `packageBin` task to HDFS. No further configuration is necessary, aside from setting your `hadoopClasspath`.
+By default, sbt-hadoop is configured to upload the resulting artifact of the `packageBin` task to HDFS.
 
-Once the `hadoopClasspath` is configured properly, an invocation of `hadoop:publish` will build, and subsequentially publish, your binary artifact to HDFS.
+The only required configuration is setting your `hadoopClasspath` and your `hadoopHdfsArtifactPath`, and manually enabling the `HadoopPlugin`.
+
+```
+enablePlugins(HadoopPlugin)
+```
+
+Once your build is properly configured, an invocation of `hadoop:publish` will build, and subsequentially publish, your binary artifact to HDFS.
 
 For more information, refer to the [Packaging documentation](http://www.scala-sbt.org/0.13/docs/Howto-Package.html) provided in the sbt reference manual.
 
