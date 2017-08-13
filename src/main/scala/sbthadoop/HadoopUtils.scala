@@ -1,7 +1,7 @@
 package sbthadoop
 
 import java.io.File
-import sbt.{Attributed, PathFinder}
+import sbt.Attributed
 import sbt.Keys.Classpath
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
@@ -37,7 +37,7 @@ object HadoopUtils {
   }
 
   def filesInDirectory(dir: File): Seq[File] = {
-    PathFinder(dir).***.get
+    PathFinderUtils.getAllPaths(dir)
   }
 
   implicit def fileToPath(file: File): Path = {

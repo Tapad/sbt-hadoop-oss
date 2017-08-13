@@ -2,6 +2,7 @@ package sbthadoop
 
 import sbt._
 import sbt.Keys._
+import scala.sys.process.{Process, ProcessLogger}
 
 object HadoopPlugin extends AutoPlugin {
 
@@ -30,7 +31,8 @@ object HadoopPlugin extends AutoPlugin {
         case None => sys.error("`hadoopExecutable` must be defined in order to export its classpath")
         case Some(executable) =>
           try {
-            val result = s"${executable.getAbsolutePath} classpath".!!.trim
+            val process = Process(s"${executable.getAbsolutePath} classpath")
+            val result = process.!!.trim
             val paths = IO.parseClasspath(result)
             Attributed.blankSeq(paths)
           } catch {
@@ -57,7 +59,11 @@ object HadoopPlugin extends AutoPlugin {
     hadoopLocalArtifactPath := {
       (artifactPath in (Compile, packageBin)).value
     },
-    hadoopUser := sys.props.getOrElse("user.name", "whoami".!!)
+    hadoopUser := {
+      val process = Process("whoami")
+      lazy val output = process.!!
+      sys.props.getOrElse("user.name", output)
+    }
   )
 
   lazy val requiredSettings = Seq(

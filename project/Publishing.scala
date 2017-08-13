@@ -1,6 +1,8 @@
 import sbt._
 import sbt.Keys._
 import bintray.BintrayKeys._
+import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleaseStateTransformations._
 
 object Publishing {
 
@@ -27,5 +29,21 @@ object Publishing {
         <connection>scm:git:git://github.com/Tapad/sbt-hadoop.git</connection>
       </scm>
     }
+  )
+
+  val ReleaseSettings = Seq(
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      releaseStepCommandAndRemaining("^clean"),
+      releaseStepCommandAndRemaining("^test"),
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("^publish"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
   )
 }

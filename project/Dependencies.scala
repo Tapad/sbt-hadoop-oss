@@ -1,10 +1,8 @@
 object Dependencies {
 
-  val ScalaVersion = "2.10.6"
+  val ScalaTestVersion = "3.0.1"
 
-  val ScalaTestVersion = "2.2.6"
+  val SLF4JVersion = "1.7.25"
 
-  val SLF4JVersion = "1.7.24"
-
-  val HadoopVersion = "2.7.3"
+  val HadoopVersion = "2.7.4"
 }
