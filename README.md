@@ -16,14 +16,14 @@ An [sbt](http://scala-sbt.org) plugin for publishing artifacts to the [Hadoop](h
     * [Releasing artifacts](#releasing-artifacts)
 
 ## Requirements
-- sbt (0.13.5+)
+- sbt (0.13.5+ or 1.0.0+)
 - An installation of Hadoop (>= 2.6.x) to target
 
 ## Installation
 Add the following line to `project/plugins.sbt`. See the [Using plugins](http://www.scala-sbt.org/release/docs/Using-Plugins.html) section of the sbt documentation for more information.
 
 ```
-addSbtPlugin("com.tapad.sbt" % "sbt-hadoop" % "0.1.1")
+addSbtPlugin("com.tapad.sbt" % "sbt-hadoop" % "0.2.0")
 ```
 
 ## Usage
@@ -107,7 +107,7 @@ To use sbt-hadoop in conjunction with sbt-assembly, add the following to your `p
 ```
 addSbtPlugin("com.eed3sign" % "sbt-assembly" % "0.14.4")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-hadoop" % "0.1.1")
+addSbtPlugin("com.tapad.sbt" % "sbt-hadoop" % "0.2.0")
 ```
 
 ```
