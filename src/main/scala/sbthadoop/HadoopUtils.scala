@@ -10,7 +10,7 @@ object HadoopUtils {
 
   val HadoopConfigurationFilenames = Set("core-site.xml", "hdfs-site.xml")
 
-  def getFileSystem(configurationFiles: Seq[File], username: String): FileSystem = {
+  def getConfiguration(configurationFiles: Seq[File]): Configuration = {
     try {
       val configuration = new Configuration(false)
       for {
@@ -25,6 +25,19 @@ object HadoopUtils {
       configuration.setIfUnset("fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
       configuration.setIfUnset("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
       configuration.setClassLoader(getClass.getClassLoader)
+      configuration
+    } catch {
+      case e: Exception => sys.error(s"Error occurred when trying to create Configuration instance: ${e.getMessage}")
+    }
+  }
+
+  def getFileSystem(configurationFiles: Seq[File], username: String): FileSystem = {
+    val configuration = getConfiguration(configurationFiles)
+    getFileSystem(configuration, username)
+  }
+
+  def getFileSystem(configuration: Configuration, username: String): FileSystem = {
+    try {
       val uri = FileSystem.getDefaultUri(configuration)
       FileSystem.newInstance(uri, configuration, username)
     } catch {

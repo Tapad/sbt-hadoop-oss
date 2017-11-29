@@ -17,6 +17,7 @@ object HadoopPlugin extends AutoPlugin {
     val hadoopHdfs = HadoopKeys.hadoopHdfs
     val hadoopHdfsArtifactPath  = HadoopKeys.hadoopHdfsArtifactPath
     val hadoopLocalArtifactPath = HadoopKeys.hadoopLocalArtifactPath
+    val hadoopConfiguration = HadoopKeys.hadoopConfiguration
     val hadoopUser = HadoopKeys.hadoopUser
   }
 
@@ -43,6 +44,14 @@ object HadoopPlugin extends AutoPlugin {
     },
     hadoopExecutable := sys.env.get("HADOOP_HOME").map(file(_) / "bin" / "hadoop"),
     hadoopHdfs := {
+      val configuration = hadoopConfiguration.value
+      val username = hadoopUser.value
+      getFileSystem(configuration, username)
+    },
+    hadoopLocalArtifactPath := {
+      (artifactPath in (Compile, packageBin)).value
+    },
+    hadoopConfiguration := {
       val log = streams.value.log
       val classpathFiles = hadoopClasspath.value.files.flatMap {
         case path if path.exists && path.isFile => Seq(path)
@@ -52,12 +61,7 @@ object HadoopPlugin extends AutoPlugin {
           log.debug(s"Skipping `hadoopClasspath` entry $path for FileSystem configuration")
           Seq.empty
       }
-      val configurationFiles = hadoopClasspath.value.files
-      val username = hadoopUser.value
-      getFileSystem(classpathFiles, username)
-    },
-    hadoopLocalArtifactPath := {
-      (artifactPath in (Compile, packageBin)).value
+      getConfiguration(classpathFiles)
     },
     hadoopUser := {
       val process = Process("whoami")
